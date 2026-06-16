@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fault Lines — Live Session Results</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #F0F4F8; color: #1A2B3C; min-height: 100vh; }
+
+  .header {
+    background: #1F4E79;
+    color: white;
+    padding: 16px 28px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+  .header .sub { font-size: 14px; opacity: 0.75; font-weight: 400; }
+  .header .team-count {
+    margin-left: auto;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+  }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .chart-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px 20px 12px;
+    border: 0.5px solid #D1DCE8;
+  }
+
+  .chart-title {
+    font-size: 13px;
+    color: #5A7A9A;
+    font-weight: 500;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 420px;
+  }
+
+  .axis-label {
+    text-align: center;
+    font-size: 12px;
+    color: #8AAAC0;
+    margin-top: 6px;
+  }
+
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px;
+    border: 0.5px solid #D1DCE8;
+  }
+
+  .card h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1F4E79;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: #5A7A9A;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #D1DCE8;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1A2B3C;
+    margin-bottom: 12px;
+    background: #F8FAFC;
+    transition: border-color 0.15s;
+  }
+  input[type="text"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #2E75B6;
+    background: white;
+  }
+
+  .delta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 10px;
+    background: #1F4E79;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 8px;
+  }
+  .btn-primary:hover { background: #2E75B6; }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 8px;
+    background: white;
+    color: #5A7A9A;
+    border: 1px solid #D1DCE8;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { background: #F0F4F8; color: #1A2B3C; }
+
+  .team-list { display: flex; flex-direction: column; gap: 6px; }
+  .team-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    background: #F8FAFC;
+    font-size: 12px;
+    border: 0.5px solid #D1DCE8;
+  }
+  .team-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .team-pill-name { font-weight: 500; flex: 1; }
+  .team-pill-scores { color: #8AAAC0; font-size: 11px; }
+  .team-pill-remove {
+    color: #C0CCD8;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+    background: none;
+    border: none;
+  }
+  .team-pill-remove:hover { color: #DC2626; }
+
+  .empty-state {
+    text-align: center;
+    color: #A0B8CC;
+    font-size: 12px;
+    padding: 12px 0;
+    font-style: italic;
+  }
+
+  .leaderboard-section {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    padding: 0 16px;
+  }
+
+  .leaderboard-card {
+    background: white;
+    border-radius: 10px;
+    border: 0.5px solid #D1DCE8;
+    overflow: hidden;
+  }
+
+  .leaderboard-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #EEF2F6;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1F4E79;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th {
+    background: #F8FAFC;
+    padding: 10px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #8AAAC0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #EEF2F6;
+  }
+  td { padding: 11px 16px; border-bottom: 0.5px solid #F0F4F8; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #FAFCFE; }
+
+  .rank-cell { font-size: 18px; width: 48px; text-align: center; }
+  .name-cell { font-weight: 600; }
+  .delta-cell { font-weight: 500; }
+  .delta-pos { color: #276749; }
+  .delta-neg { color: #C05621; }
+  .delta-zero { color: #8AAAC0; }
+  .score-cell { font-weight: 700; font-size: 15px; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-green { background: #D1FAE5; color: #065F46; }
+  .badge-amber { background: #FEF3C7; color: #92400E; }
+  .badge-red { background: #FEE2E2; color: #991B1B; }
+
+  .empty-table {
+    text-align: center;
+    color: #A0B8CC;
+    font-style: italic;
+    padding: 32px;
+    font-size: 14px;
+  }
+
+  .color-swatch {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Fault Lines</h1>
+  <span class="sub">Live Session Results</span>
+  <span class="team-count" id="teamCount">0 teams</span>
+</div>
+
+<div class="workspace">
+  <div class="chart-card">
+    <div class="chart-title">Operating profit vs volume — delta vs starting position</div>
+    <div class="chart-wrap">
+      <canvas id="scatterChart" role="img" aria-label="Scatter plot of team results: Operating Profit (P) on Y axis vs Volume (V) on X axis. Teams appear as coloured dots in four quadrants.">Add teams to see results plotted here.</canvas>
+    </div>
+    <div class="axis-label">← Volume deficit &nbsp;|&nbsp; V delta (from starting position) &nbsp;|&nbsp; Volume surplus →</div>
+  </div>
+
+  <div class="side-panel">
+    <div class="card">
+      <h2>Add team</h2>
+      <label for="teamName">Team name</label>
+      <input type="text" id="teamName" placeholder="e.g. Team A" maxlength="24" />
+
+      <div class="delta-row">
+        <div>
+          <label for="pDelta">P delta</label>
+          <input type="number" id="pDelta" placeholder="e.g. −8" step="0.1" />
+        </div>
+        <div>
+          <label for="vDelta">V delta</label>
+          <input type="number" id="vDelta" placeholder="e.g. +3" step="0.1" />
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="addTeam()">+ Plot team</button>
+      <button class="btn-secondary" onclick="clearAll()">Clear all</button>
+    </div>
+
+    <div class="card">
+      <h2>Teams</h2>
+      <div class="team-list" id="teamList">
+        <div class="empty-state">No teams yet</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="leaderboard-section">
+  <div class="leaderboard-card">
+    <div class="leaderboard-header">Leaderboard — weighted score (P×55% + V×35%)</div>
+    <div id="leaderboardBody">
+      <div class="empty-table">Add teams above to build the leaderboard</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const TEAM_COLORS = [
+  '#1F4E79','#C05621','#276749','#7C3AED',
+  '#DC2626','#0891B2','#B45309','#DB2777'
+];
+
+const RANKS = ['🥇','🥈','🥉','4','5','6','7','8'];
+
+let teams = [];
+let chart = null;
+
+function fmtDelta(v) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  const n = parseFloat(v);
+  return (n > 0 ? '+' : '') + n.toFixed(1);
+}
+
+function deltaClass(v) {
+  const n = parseFloat(v);
+  if (n > 0) return 'delta-pos';
+  if (n < 0) return 'delta-neg';
+  return 'delta-zero';
+}
+
+function calcScore(team) {
+  return parseFloat(team.p) * 0.55 + parseFloat(team.v) * 0.35;
+}
+
+function verdict(score) {
+  if (score >= 0) return { label: 'Pressure-tested', cls: 'badge-green' };
+  if (score >= -15) return { label: 'Weathered', cls: 'badge-amber' };
+  return { label: 'Exposed', cls: 'badge-red' };
+}
+
+function getScaleBounds() {
+  if (teams.length === 0) return { xMin: -25, xMax: 15, yMin: -30, yMax: 15 };
+  const vs = teams.map(t => parseFloat(t.v));
+  const ps = teams.map(t => parseFloat(t.p));
+  const pad = 5;
+  const xMin = Math.min(-10, Math.min(...vs) - pad);
+  const xMax = Math.max(10, Math.max(...vs) + pad);
+  const yMin = Math.min(-15, Math.min(...ps) - pad);
+  const yMax = Math.max(10, Math.max(...ps) + pad);
+  return { xMin, xMax, yMin, yMax };
+}
+
+const quadrantPlugin = {
+  id: 'quadrants',
+  beforeDraw(chart) {
+    const { ctx, chartArea: { left, right, top, bottom }, scales: { x, y } } = chart;
+    const zx = Math.max(left, Math.min(right, x.getPixelForValue(0)));
+    const zy = Math.max(top, Math.min(bottom, y.getPixelForValue(0)));
+
+    const fills = [
+      { x: zx, y: top, w: right - zx, h: zy - top, color: 'rgba(39,103,73,0.06)' },
+      { x: left, y: top, w: zx - left, h: zy - top, color: 'rgba(31,78,121,0.06)' },
+      { x: zx, y: zy, w: right - zx, h: bottom - zy, color: 'rgba(192,86,33,0.06)' },
+      { x: left, y: zy, w: zx - left, h: bottom - zy, color: 'rgba(180,20,20,0.05)' },
+    ];
+    fills.forEach(f => { ctx.fillStyle = f.color; ctx.fillRect(f.x, f.y, f.w, f.h); });
+
+    ctx.save();
+    ctx.font = '600 12px Segoe UI, Arial, sans-serif';
+    ctx.textAlign = 'center';
+    const labels = [
+      { text: 'Pressure-tested', x: (zx + right) / 2, y: (top + zy) / 2, color: 'rgba(39,103,73,0.45)' },
+      { text: 'OP-protected', x: (left + zx) / 2, y: (top + zy) / 2, color: 'rgba(31,78,121,0.35)' },
+      { text: 'Volume-led', x: (zx + right) / 2, y: (zy + bottom) / 2, color: 'rgba(192,86,33,0.40)' },
+      { text: 'Exposed', x: (left + zx) / 2, y: (zy + bottom) / 2, color: 'rgba(180,20,20,0.40)' },
+    ];
+    labels.forEach(l => { ctx.fillStyle = l.color; ctx.fillText(l.text, l.x, l.y); });
+    ctx.restore();
+  },
+  afterDatasetsDraw(chart) {
+    const { ctx } = chart;
+    chart.data.datasets.forEach((ds, i) => {
+      const meta = chart.getDatasetMeta(i);
+      if (!meta.visible) return;
+      meta.data.forEach(point => {
+        const { x, y } = point.getCenterPoint();
+        ctx.save();
+        ctx.font = '600 12px Segoe UI, Arial, sans-serif';
+        ctx.fillStyle = ds.borderColor;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(ds.label, x, y - 10);
+        ctx.restore();
+      });
+    });
+  }
+};
+
+function buildChart() {
+  const ctx = document.getElementById('scatterChart').getContext('2d');
+  if (chart) chart.destroy();
+
+  const bounds = getScaleBounds();
+
+  const datasets = teams.map((t, i) => ({
+    label: t.name,
+    data: [{ x: parseFloat(t.v), y: parseFloat(t.p) }],
+    backgroundColor: TEAM_COLORS[i % TEAM_COLORS.length] + '22',
+    borderColor: TEAM_COLORS[i % TEAM_COLORS.length],
+    borderWidth: 2,
+    pointRadius: 12,
+    pointHoverRadius: 14,
+    pointStyle: 'circle',
+  }));
+
+  chart = new Chart(ctx, {
+    type: 'scatter',
+    data: { datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 500, easing: 'easeOutQuart' },
+      scales: {
+        x: {
+          min: bounds.xMin,
+          max: bounds.xMax,
+          title: {
+            display: true,
+            text: 'V delta',
+            color: '#8AAAC0',
+            font: { size: 12, weight: '500' },
+          },
+          grid: {
+            color: ctx => ctx.tick.value === 0 ? '#1F4E79' : '#EEF2F6',
+            lineWidth: ctx => ctx.tick.value === 0 ? 1.5 : 0.5,
+          },
+          ticks: { color: '#8AAAC0', font: { size: 11 }, callback: v => (v > 0 ? '+' : '') + v },
+        },
+        y: {
+          min: bounds.yMin,
+          max: bounds.yMax,
+          title: {
+            display: true,
+            text: 'P delta',
+            color: '#8AAAC0',
+            font: { size: 12, weight: '500' },
+          },
+          grid: {
+            color: ctx => ctx.tick.value === 0 ? '#1F4E79' : '#EEF2F6',
+            lineWidth: ctx => ctx.tick.value === 0 ? 1.5 : 0.5,
+          },
+          ticks: { color: '#8AAAC0', font: { size: 11 }, callback: v => (v > 0 ? '+' : '') + v },
+        },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => items[0].dataset.label,
+            label: item => [
+              `P delta: ${fmtDelta(item.parsed.y)}`,
+              `V delta: ${fmtDelta(item.parsed.x)}`,
+              `Weighted: ${calcScore(teams[item.datasetIndex]).toFixed(1)}`,
+            ],
+          },
+          backgroundColor: '#1F4E79',
+          titleFont: { size: 13, weight: '700' },
+          bodyFont: { size: 12 },
+          padding: 10,
+          cornerRadius: 6,
+        },
+      },
+    },
+    plugins: [quadrantPlugin],
+  });
+}
+
+function renderTeamList() {
+  const el = document.getElementById('teamList');
+  if (teams.length === 0) {
+    el.innerHTML = '<div class="empty-state">No teams yet</div>';
+    return;
+  }
+  el.innerHTML = teams.map((t, i) => `
+    <div class="team-pill">
+      <div class="team-dot" style="background:${TEAM_COLORS[i % TEAM_COLORS.length]}"></div>
+      <span class="team-pill-name">${t.name}</span>
+      <span class="team-pill-scores">P:${fmtDelta(t.p)} V:${fmtDelta(t.v)}</span>
+      <button class="team-pill-remove" onclick="removeTeam(${i})" title="Remove">×</button>
+    </div>
+  `).join('');
+  document.getElementById('teamCount').textContent = teams.length + (teams.length === 1 ? ' team' : ' teams');
+}
+
+function renderLeaderboard() {
+  const el = document.getElementById('leaderboardBody');
+  if (teams.length === 0) {
+    el.innerHTML = '<div class="empty-table">Add teams above to build the leaderboard</div>';
+    return;
+  }
+
+  const ranked = [...teams]
+    .map((t, originalIndex) => ({ ...t, score: calcScore(t), colorIndex: originalIndex }))
+    .sort((a, b) => b.score - a.score);
+
+  const rows = ranked.map((t, rank) => {
+    const v = verdict(t.score);
+    return `
+      <tr>
+        <td class="rank-cell">${RANKS[rank] || rank + 1}</td>
+        <td class="name-cell">
+          <span class="color-swatch" style="background:${TEAM_COLORS[t.colorIndex % TEAM_COLORS.length]}"></span>${t.name}
+        </td>
+        <td class="delta-cell ${deltaClass(t.p)}">${fmtDelta(t.p)}</td>
+        <td class="delta-cell ${deltaClass(t.v)}">${fmtDelta(t.v)}</td>
+        <td class="score-cell ${deltaClass(t.score)}">${t.score.toFixed(1)}</td>
+        <td><span class="badge ${v.cls}">${v.label}</span></td>
+      </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Team</th>
+          <th>P delta</th>
+          <th>V delta</th>
+          <th>Weighted score</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function addTeam() {
+  const name = document.getElementById('teamName').value.trim();
+  const p = parseFloat(document.getElementById('pDelta').value);
+  const v = parseFloat(document.getElementById('vDelta').value);
+
+  if (!name) { alert('Please enter a team name.'); return; }
+  if (isNaN(p) || isNaN(v)) { alert('P delta and V delta are required.'); return; }
+  if (teams.some(t => t.name.toLowerCase() === name.toLowerCase())) {
+    alert('A team with that name already exists.'); return;
+  }
+  if (teams.length >= 8) { alert('Maximum 8 teams supported.'); return; }
+
+  teams.push({ name, p, v });
+
+  document.getElementById('teamName').value = '';
+  document.getElementById('pDelta').value = '';
+  document.getElementById('vDelta').value = '';
+
+  buildChart();
+  renderTeamList();
+  renderLeaderboard();
+}
+
+function removeTeam(index) {
+  teams.splice(index, 1);
+  buildChart();
+  renderTeamList();
+  renderLeaderboard();
+  document.getElementById('teamCount').textContent = teams.length + (teams.length === 1 ? ' team' : ' teams');
+}
+
+function clearAll() {
+  if (teams.length === 0) return;
+  if (!confirm('Remove all teams?')) return;
+  teams = [];
+  if (chart) { chart.destroy(); chart = null; }
+  renderTeamList();
+  renderLeaderboard();
+  document.getElementById('teamCount').textContent = '0 teams';
+  buildChart();
+}
+
+document.getElementById('teamName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('pDelta').focus();
+});
+document.getElementById('pDelta').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('vDelta').focus();
+});
+document.getElementById('vDelta').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addTeam();
+});
+
+buildChart();
+renderTeamList();
+renderLeaderboard();
+</script>
+</body>
+</html>
