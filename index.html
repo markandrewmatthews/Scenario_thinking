@@ -91,7 +91,7 @@ body{background:var(--bg);color:var(--t);font-family:'Sora',system-ui,sans-serif
 .ti-b{height:3px;background:var(--bg3);border-radius:2px;margin-top:4px;overflow:hidden}
 .ti-f{height:3px;border-radius:2px;transition:width .6s ease}
 .si-wrap{margin:14px 0 18px}
-.si-head{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-bottom:5px}
+.si-head{position:relative;height:13px;font-size:10px;color:var(--t3);margin-bottom:5px}.si-head span{position:absolute;white-space:nowrap}
 .si-track{position:relative;height:7px;border-radius:4px}
 .si-track.neg{background:linear-gradient(to right,#dcfce7 0%,#fef9c3 30%,#fee2e2 70%,#fecaca 100%)}
 .si-track.pos{background:linear-gradient(to right,#dcfce7 0%,#fef9c3 50%,#dbeafe 100%)}
@@ -169,6 +169,28 @@ input[type=text]:focus{outline:none;border-color:#3b82f6}
     <div class="situ-l" style="margin-bottom:8px">The year ahead</div>
     <div class="situ-t">You will face four disruptions to your plan, one per quarter. For each impact, you will see three possible severity levels — base, downside, and crisis — but you will not know which materialises until after you have committed your decisions to manage the uncertainty. All choices compound; your team will be measured on the outcome of the decisions you make at the end of the cycle.</div>
   </div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="situ-l" style="margin-bottom:10px">How to play</div>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="flex:0 0 20px;height:20px;border-radius:50%;background:var(--t);color:var(--bg);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">1</span>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5"><strong style="color:var(--t)">Read the scenario.</strong> See the disruption hitting your plan this quarter, and the range of severities it could take.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="flex:0 0 20px;height:20px;border-radius:50%;background:var(--t);color:var(--bg);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">2</span>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5"><strong style="color:var(--t)">Think it through as a team.</strong> Before anything locks, discuss how you would react if this landed in your own OpCo.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="flex:0 0 20px;height:20px;border-radius:50%;background:var(--t);color:var(--bg);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">3</span>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5"><strong style="color:var(--t)">Commit your decisions.</strong> The real severity is revealed only after you lock in. Make your calls on each item you are presented with.</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="flex:0 0 20px;height:20px;border-radius:50%;background:var(--t);color:var(--bg);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">4</span>
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.5"><strong style="color:var(--t)">Repeat each quarter.</strong> Every decision compounds into the year-end landing.</div>
+      </div>
+    </div>
+    <div style="margin-top:11px;padding-top:10px;border-top:var(--b);font-size:12px;color:var(--t);font-weight:600;line-height:1.5">Your result is measured against your own starting point — not in absolute terms against the room.</div>
+  </div>
   <div class="card" style="background:var(--bg2);border:var(--b);margin-bottom:10px;text-align:center;padding:14px 17px">
     <div style="font-size:15px;font-weight:600;color:var(--t);margin-bottom:4px">Good luck.</div>
     <div style="font-size:12px;color:var(--t2);line-height:1.5">Your decisions will define the landing.</div>
@@ -223,6 +245,7 @@ input[type=text]:focus{outline:none;border-color:#3b82f6}
   <div class="card" style="margin-bottom:10px"><div class="sec-lbl">Decisions confirmed</div><div id="sumChoices"></div></div>
   <div class="card" style="margin-bottom:14px">
     <div class="sec-lbl">Opening delivery profile</div>
+    <div style="font-size:11px;color:var(--t3);line-height:1.5;margin:2px 0 10px">This is your starting point — every quarterly decision moves each score from here. <strong style="color:var(--t2)">50 = a balanced position</strong>; above 50 leans ahead, below 50 leans behind.</div>
     <div id="sumScores"></div>
     <div id="sumRF" style="margin-top:10px;padding-top:10px;border-top:var(--b);font-size:11px;color:var(--t3)"></div>
   </div>
@@ -277,7 +300,7 @@ input[type=text]:focus{outline:none;border-color:#3b82f6}
     <div style="font-size:12px;color:var(--t2)">Slightly worse than the downside case. At the −6% run rate, Operating Profit at risk is approx. €10.5M — equivalent to one third of your full-year AP. A moderate ring-fence cut partially offsets this; pricing action is the more powerful lever.</div>
   </div>
   <div class="si-wrap">
-    <div class="si-head"><span>Base (0%)</span><span>Downside (−5%)</span><span>Crisis (−20%)</span></div>
+    <div class="si-head"><span style="left:0">Base (0%)</span><span style="left:25%;transform:translateX(-50%)">Downside (−5%)</span><span style="right:0">Crisis (−20%)</span></div>
     <div class="si-track neg"><div class="si-sep" style="left:25%"></div><div class="si-marker" style="left:30%"></div></div>
     <div class="si-foot">↑ Actual: −6% — between downside and crisis, tracking closer to downside</div>
   </div>
@@ -348,7 +371,7 @@ input[type=text]:focus{outline:none;border-color:#3b82f6}
     <div style="font-size:12px;color:var(--t2)">Volume just past downside; costs confirmed at −10% vs AP across the market. Combined with Q1, cumulative cost pressure now represents approx. €18M vs AP — close to two thirds of full-year AP Operating Profit.</div>
   </div>
   <div class="si-wrap">
-    <div class="si-head"><span>Base (−2%)</span><span>Downside (−3%)</span><span>Crisis (−5%)</span></div>
+    <div class="si-head"><span style="left:0">Base (−2%)</span><span style="left:33%;transform:translateX(-50%)">Downside (−3%)</span><span style="right:0">Crisis (−5%)</span></div>
     <div class="si-track neg"><div class="si-sep" style="left:33%"></div><div class="si-marker" style="left:67%"></div></div>
     <div class="si-foot">↑ Volume: −4% — between downside and crisis</div>
   </div>
@@ -419,8 +442,8 @@ input[type=text]:focus{outline:none;border-color:#3b82f6}
     <div style="font-size:12px;color:var(--t2)">The cut landed between the downside and crisis case — deeper than a tactical move, but short of a structural reset. Teams holding their RSP now face a 7% price gap in the mainstream segment. The gap is wide enough to drive switching in value-sensitive accounts, but not wide enough to make a full RSP response unavoidable.</div>
   </div>
   <div class="si-wrap">
-    <div class="si-head"><span>Base (−2%)</span><span>Downside (−5%)</span><span>Crisis (−10%)</span></div>
-    <div class="si-track neg"><div class="si-sep" style="left:37%"></div><div class="si-sep" style="left:72%"></div><div class="si-marker" style="left:62%"></div></div>
+    <div class="si-head"><span style="left:0">Base (−2%)</span><span style="left:37%;transform:translateX(-50%)">Downside (−5%)</span><span style="right:0">Crisis (−10%)</span></div>
+    <div class="si-track neg"><div class="si-sep" style="left:37%"></div><div class="si-marker" style="left:62%"></div></div>
     <div class="si-foot">↑ Competitor cut: −7% — between downside and crisis</div>
   </div>
   <div class="intel" style="margin-bottom:14px">
@@ -520,9 +543,16 @@ input[type=text]:focus{outline:none;border-color:#3b82f6}
     <div id="finalTempLine"></div>
   </div>
   <div class="fn-score" id="finalFootnote"></div>
+  <div class="card" id="shareCard" style="background:var(--sbg);border:1px solid var(--sbd);margin-bottom:14px">
+    <div class="sec-lbl" style="color:var(--st)">Scores to share</div>
+    <div id="shareFigures" style="margin-top:6px"></div>
+    <div style="margin-top:11px;font-size:12.5px;color:var(--t);font-weight:600;line-height:1.5">Share these two figures in the Teams chat after you finish playing.</div>
+    <div id="shareLine" style="margin-top:8px;font-size:13px;font-weight:600;color:var(--t);background:var(--bg);border:var(--b);border-radius:6px;padding:9px 12px;text-align:center;letter-spacing:.01em"></div>
+    <button class="btn bp" onclick="copyShare()" style="margin-top:10px">Copy for Teams chat</button>
+    <div id="shareCopied" style="display:none;margin-top:7px;font-size:11px;color:var(--st);text-align:center;font-weight:600">Copied — paste it into the Teams chat</div>
+  </div>
   <div class="card" style="margin-bottom:14px"><div class="sec-lbl">Full decision trail</div><div id="finalTrail"></div></div>
   <div>
-    <button class="btn bp" onclick="goTo(19)">Present to room →</button>
     <button class="btn bs" onclick="copyResults()">Copy results summary</button>
     <button class="btn bs" onclick="reset()">Play again</button>
   </div>
@@ -628,7 +658,7 @@ const Q={
        desc:'Accelerate pricing to get ahead of the inflation environment. Maximum profit recovery but highest volume risk.',
        hint:'↑↑ Operating Profit · ↓↓ Volume — significant execution risk'}
     ],
-    env:{V:0,P:-32,R:-6},
+    env:{V:0,P:-24,R:-5},
     dp:{q1p_nc:{V:0,P:0,R:-5},q1p_inc:{V:-12,P:22},q1p_early:{V:-20,P:30}},
     insights:{
       nc:'Holding the plan in Q1 keeps commercial activation consistent, but Operating Profit has absorbed the full cost shock — approx. €10.5M at current run rate, nearly a third of AP. Your Q2 position depends heavily on the pricing call and whether the cost environment stabilises.',
@@ -701,10 +731,10 @@ const Q={
 };
 
 const ARCHETYPES=[
-  {min:0,name:'Pressure-tested',rag:'green',
+  {min:2,name:'Pressure-tested',rag:'green',
    pct:'Top 25% of all possible outcomes in Arelia this year',
    txt:'The business absorbed more than most paths through this scenario allowed. Four shocks, each arriving without certainty about its severity — and the year ends in the top quarter of all outcomes. The decision trail shows how it got here. Some calls will look cleaner in hindsight than they did at the time; the conversation worth having is which ones, and why.'},
-  {min:-16,name:'Weathered',rag:'amber',
+  {min:-13,name:'Weathered',rag:'amber',
    pct:'Middle 50% of all possible outcomes in Arelia this year',
    txt:'Managing four compounding shocks with incomplete information is genuinely hard — and the business lands in the middle range of outcomes. Not every impact was fully contained, but neither did the year unravel. The decision trail shows the moments where the pressure was greatest. Those are the points worth returning to.'},
   {min:-999,name:'Exposed',rag:'red',
@@ -1328,7 +1358,7 @@ function renderFinal(){
   const rag=arch.rag;
   const profName=(PROFILES[st.prof]||{}).name||'';
   const cohLevel=computeSetupCoherence();
-  const fn='Weighted outcome: '+(score>=0?'+':'')+score+' · possible range this year: −39 to +24';
+  const fn='Weighted outcome: '+(score>=0?'+':'')+score+' · possible range this year: −37 to +22';
   function setRAG(dotId,bandId,pctId,teamId,insId,cohId,tmpId,fnId){
     const dot=document.getElementById(dotId);
     if(dot)dot.className='rag-dot rag-'+rag;
@@ -1345,6 +1375,7 @@ function renderFinal(){
   }
   setRAG('finalRAG','finalBand','finalPct','finalTeam','finalInsight','finalCoherence','finalTempLine','finalFootnote');
   const fS=document.getElementById('finalScores');if(fS)fS.innerHTML=scoresHTML(st.sc,true);
+  renderShare();
   renderTrail('finalTrail');
   setRAG('pRing','pArch','pPct','pTeam','pInsight','pCoherence','pTempLine','pFootnote');
   const pS=document.getElementById('pScores');if(pS)pS.innerHTML=scoresHTML(st.sc,true);
@@ -1428,6 +1459,42 @@ function renderTrail(elId){
 }
 
 // ── COPY & RESET ──────────────────────────────────────────────────────────────
+function renderShare(){
+  const sc=st.sc||{},ss=st.startSc||{};
+  const fmtD=d=>(d>=0?'+':'')+d;
+  const COL='1fr 64px 78px 66px';
+  let html='<div style="display:grid;grid-template-columns:'+COL+';gap:6px;padding-bottom:6px;border-bottom:var(--b);margin-bottom:2px">'+
+    '<span></span>'+
+    '<span style="text-align:right;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">Starting</span>'+
+    '<span style="text-align:right;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--st)">Movement</span>'+
+    '<span style="text-align:right;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)">New total</span>'+
+  '</div>';
+  [['P','Operating Profit'],['V','Volume']].forEach(([k,lbl])=>{
+    const start=ss[k]||0,total=sc[k]||0,d=total-start;
+    const dcls=d>0?'d-pos':d<0?'d-neg':'d-neu';
+    html+='<div style="display:grid;grid-template-columns:'+COL+';gap:6px;align-items:baseline;padding:8px 0">'+
+      '<span style="font-size:13px;font-weight:600;color:var(--t)">'+lbl+' ('+k+')</span>'+
+      '<span style="text-align:right;font-size:13px;color:var(--t2)">'+start+'</span>'+
+      '<span class="'+dcls+'" style="text-align:right;font-size:18px;font-weight:700">'+fmtD(d)+'</span>'+
+      '<span style="text-align:right;font-size:13px;font-weight:600;color:var(--t)">'+total+'</span>'+
+    '</div>';
+  });
+  const fEl=document.getElementById('shareFigures');if(fEl)fEl.innerHTML=html;
+  const dP=(sc.P||0)-(ss.P||0),dV=(sc.V||0)-(ss.V||0);
+  const lEl=document.getElementById('shareLine');
+  if(lEl)lEl.textContent=(st.name||'Team')+'   ·   P = '+fmtD(dP)+'   ·   V = '+fmtD(dV);
+}
+function copyShare(){
+  const sc=st.sc||{},ss=st.startSc||{};
+  const fmtD=d=>(d>=0?'+':'')+d;
+  const dP=(sc.P||0)-(ss.P||0),dV=(sc.V||0)-(ss.V||0);
+  const txt=(st.name||'Team')+', P = '+fmtD(dP)+', V = '+fmtD(dV);
+  navigator.clipboard.writeText(txt).then(()=>{
+    const el=document.getElementById('shareCopied');
+    if(el){el.style.display='block';setTimeout(()=>{el.style.display='none';},2500);}
+  }).catch(()=>{});
+}
+
 function copyResults(){
   const score=tot(st.sc);
   const arch=getArch(score);
@@ -1438,7 +1505,7 @@ function copyResults(){
     'AME Scenario Thinking Game — Arelia Brew Co.',
     'Team: '+st.name,
     'Result: '+arch.name+' · '+arch.pct,
-    'Weighted outcome: '+(score>=0?'+':'')+score+' (possible range: −39 to +24)',
+    'Weighted outcome: '+(score>=0?'+':'')+score+' (possible range: −37 to +22)',
     '',
     'Decision alignment:',
     'Setup coherence: opening choices were '+cohLevel+' '+profName+' objective.',
