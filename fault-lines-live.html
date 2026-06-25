@@ -302,7 +302,7 @@
 
 <div class="leaderboard-section">
   <div class="leaderboard-card">
-    <div class="leaderboard-header">Leaderboard — weighted score (P×55% + V×35%)</div>
+    <div class="leaderboard-header">Leaderboard — overall ranking</div>
     <div id="leaderboardBody">
       <div class="empty-table">Add teams above to build the leaderboard</div>
     </div>
@@ -313,10 +313,13 @@
 <script>
 const TEAM_COLORS = [
   '#1F4E79','#C05621','#276749','#7C3AED',
-  '#DC2626','#0891B2','#B45309','#DB2777'
+  '#DC2626','#0891B2','#B45309','#DB2777',
+  '#2563EB','#16A34A','#9333EA','#EA580C',
+  '#0D9488','#BE123C','#65A30D','#7E22CE',
+  '#0369A1','#A21CAF','#4D7C0F','#92400E'
 ];
 
-const RANKS = ['🥇','🥈','🥉','4','5','6','7','8'];
+const RANKS = ['🥇','🥈','🥉'];
 
 let teams = [];
 let chart = null;
@@ -550,7 +553,7 @@ function addTeam() {
   if (teams.some(t => t.name.toLowerCase() === name.toLowerCase())) {
     alert('A team with that name already exists.'); return;
   }
-  if (teams.length >= 8) { alert('Maximum 8 teams supported.'); return; }
+  if (teams.length >= 20) { alert('Maximum 20 teams supported.'); return; }
 
   teams.push({ name, p, v });
 
